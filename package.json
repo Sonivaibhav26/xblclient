@@ -1,0 +1,14 @@
+{
+  "name": "xblclient",
+  "version": "0.1.0",
+  "description": "XBL http client",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Vaibhav soni",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0"
+  }
+}
