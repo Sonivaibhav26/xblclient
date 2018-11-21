@@ -1,23 +1,43 @@
 const Axios = require('axios')
+  , { containValidOptionskey } = require('./util')
+  , _ = require('lodash')
   , methodWithNodata = ['delete', 'get', 'head', 'options']
   , methodWithData = ['post', 'put', 'patch'];
 
 const getMethodWrapper = (methodName, client, lco, logger) => {
   if (methodWithNodata.indexOf(methodName) > -1) {
     return (...params) => {
-      if (!params[1] || Object.keys(params[1] < 1))
-        params[1] = {};
-      params[1].lco = lco;
-      params[1].logger = logger;
+      let noOfArguments = params.length;
+      if (noOfArguments === 0)
+        noOfArguments = 1;
+      if (typeof params[noOfArguments - 1] === "string" && noOfArguments - 1 === 1)
+        noOfArguments += 1;
+      if (!params[noOfArguments - 1] || Object.keys(params[noOfArguments - 1] < 1))
+        params[noOfArguments - 1] = {};
+      params[noOfArguments - 1].lco = lco;
+      params[noOfArguments - 1].logger = logger;
       return client[methodName](...params);
     }
   }
   else if (methodWithData.indexOf(methodName) > -1) {
     return (...params) => {
-      if (!params[2] || Object.keys(params[1] < 1))
-        params[2] = {};
-      params[2].lco = lco;
-      params[2].logger = logger;
+      const optionsModified = false;
+      params
+        .splice(3)
+        .map((param) => {
+          if (!optionsModified && typeof param === "object" && !_.isEmpty(param) && containValidOptionskey(Object.keys(param))) {
+            param.lco = lco;
+            param.logger = logger;
+            optionsModified = true;
+          }
+          return param;
+        });
+      if (!optionsModified) {
+        if (!params[2] || Object.keys(params[2] < 1))
+          params[2] = {};
+        params[2].lco = lco;
+        params[2].logger = logger
+      }
       return client[methodName](...params);
     }
   }
@@ -41,6 +61,15 @@ const addHeadersAndLog = (config) => {
   }
 }
 
+const logResponse = ({config , ...args}) => {
+  const logger = config.logger.logger();
+  logger(config.lco).info("Response Recieved");
+  return {
+    ...args,
+    ...config
+  }
+}
+
 module.exports = {
   create: (_logger, _options = {}) => {
     const logger = _logger
@@ -48,6 +77,7 @@ module.exports = {
       , client = Axios.create(_options);
 
     client.interceptors.request.use(addHeadersAndLog);
+    client.interceptors.response.use(logResponse);
 
     return (lco) => {
       if (!util.verifyCorelation(lco)) {
