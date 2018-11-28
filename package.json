@@ -1,13 +1,24 @@
 {
-  "name": "xblclient",
-  "version": "0.1.0",
+  "name": "@xblockchainlabs/xblclient",
+  "version": "1.0.0",
   "description": "XBL http client",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Vaibhav soni",
-  "license": "ISC",
+  "bin": {
+    "xblclient": "./index.js"
+  },
+  "author": "XBlockchain Labs; Vaibhav Soni <vaibhav@xblockchainlabs.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xblockchainlabs/xblclient.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xblockchainlabs/xblclient/issues"
+  },
+  "homepage": "https://github.com/xblockchainlabs/xblclient",
+  "license": "MIT",
   "dependencies": {
     "axios": "^0.18.0",
     "lodash": "^4.17.11"
