@@ -21,9 +21,9 @@ const getMethodWrapper = (methodName, client, lco, logger) => {
   }
   else if (methodWithData.indexOf(methodName) > -1) {
     return (...params) => {
-      const optionsModified = false;
+      let optionsModified = false;
+      params.splice(3);
       params
-        .splice(3)
         .map((param) => {
           if (!optionsModified && typeof param === "object" && !_.isEmpty(param) && containValidOptionskey(Object.keys(param))) {
             param.lco = lco;
@@ -36,7 +36,7 @@ const getMethodWrapper = (methodName, client, lco, logger) => {
         if (!params[2] || Object.keys(params[2] < 1))
           params[2] = {};
         params[2].lco = lco;
-        params[2].logger = logger
+        params[2].logger = logger;
       }
       return client[methodName](...params);
     }
@@ -61,7 +61,7 @@ const addHeadersAndLog = (config) => {
   }
 }
 
-const logResponse = ({config , ...args}) => {
+const logResponse = ({ config, ...args }) => {
   const logger = config.logger.logger();
   logger(config.lco).info("Response Recieved");
   return {
@@ -75,7 +75,6 @@ module.exports = {
     const logger = _logger
       , util = logger.util()
       , client = Axios.create(_options);
-
     client.interceptors.request.use(addHeadersAndLog);
     client.interceptors.response.use(logResponse);
 
