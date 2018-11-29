@@ -7,15 +7,17 @@ const Axios = require('axios')
 const getMethodWrapper = (methodName, client, lco, logger) => {
   if (methodWithNodata.indexOf(methodName) > -1) {
     return (...params) => {
-      let noOfArguments = params.length;
-      if (noOfArguments === 0)
-        noOfArguments = 1;
-      if (typeof params[noOfArguments - 1] === "string" && noOfArguments - 1 === 1)
-        noOfArguments += 1;
-      if (!params[noOfArguments - 1] || Object.keys(params[noOfArguments - 1] < 1))
-        params[noOfArguments - 1] = {};
-      params[noOfArguments - 1].lco = lco;
-      params[noOfArguments - 1].logger = logger;
+      if (!typeof params[0] === "string") {
+        if (!params[0])
+          params[0] = {};
+        params[0].lco = lco;
+        params[0].logger = logger;
+      } else {
+        if (!params[1])
+          params[1] = {};
+        params[1].lco = lco;
+        params[1].logger = logger;
+      }
       return client[methodName](...params);
     }
   }
@@ -66,7 +68,7 @@ const logResponse = ({ config, ...args }) => {
   logger(config.lco).info("Response Recieved");
   return {
     ...args,
-    ...config
+    config
   }
 }
 
