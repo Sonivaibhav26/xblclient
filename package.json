@@ -1,6 +1,6 @@
 {
   "name": "@xblockchainlabs/xblclient",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "XBL http client",
   "main": "index.js",
   "scripts": {
