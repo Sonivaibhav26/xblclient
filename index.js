@@ -55,7 +55,7 @@ const addHeadersAndLog = (config) => {
   config.headers.copath = config.lco.copath;
   const util = config.logger.util();
   const logger = config.logger.logger();
-  config.name = config.lco.copath;
+  config.name = util._loadConfig.logConfig.name;
   config.lco = util.createCoInstance(config);
   logger(config.lco).info("Request Initiated");
   return {
