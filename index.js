@@ -57,6 +57,7 @@ const addHeadersAndLog = (config) => {
   const logger = config.logger.logger();
   config.name = util._loadConfig.logConfig.name;
   config.lco = util.createCoInstance(config);
+  config.headers.copath = Buffer.from(JSON.stringify(config.lco.copath)).toString("base64");
   logger(config.lco).info("Request Initiated");
   return {
     ...config
